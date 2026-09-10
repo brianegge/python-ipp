@@ -360,7 +360,7 @@ async def test_counters() -> None:
 
     assert counters
     assert counters.impressions_completed == 1234
-    assert counters.impressions_completed_col == {}
+    assert not counters.impressions_completed_col
     assert counters.pages_completed == 5678
     assert counters.media_sheets_completed == 9012
 
@@ -372,7 +372,7 @@ async def test_counters_defaults() -> None:
 
     assert counters
     assert counters.impressions_completed is None
-    assert counters.impressions_completed_col == {}
+    assert not counters.impressions_completed_col
     assert counters.pages_completed is None
     assert counters.media_sheets_completed is None
 
@@ -409,7 +409,7 @@ async def test_counters_col_out_of_band() -> None:
     )
 
     assert counters.impressions_completed is None
-    assert counters.impressions_completed_col == {}
+    assert not counters.impressions_completed_col
 
 
 @pytest.mark.asyncio
