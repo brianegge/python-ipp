@@ -101,8 +101,8 @@ class IPP:
         if self.username and self.password:
             auth = aiohttp.BasicAuth(self.username, self.password)
 
-        headers = {
-            "User-Agent": self.user_agent,
+        headers: dict[str, str] = {
+            "User-Agent": self.user_agent or f"PythonIPP/{VERSION}",
             "Content-Type": "application/ipp",
             "Accept": "application/ipp, text/plain, */*",
         }
