@@ -160,6 +160,12 @@ ignore = [
   "EXE002",
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"script/*" = [
+  "INP001", # scripts are not a package
+  "S310", # fetching a known https URL
+]
+
 [tool.ruff.lint.flake8-pytest-style]
 mark-parentheses = false
 fixture-parentheses = false
