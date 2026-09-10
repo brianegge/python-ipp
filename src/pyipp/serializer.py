@@ -1,4 +1,5 @@
 """Data Serializer for IPP."""
+
 from __future__ import annotations
 
 import logging

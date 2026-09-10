@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from yarl import URL
@@ -367,7 +367,7 @@ class Printer:
 
 def _utcnow() -> datetime:
     """Return the current date and time in UTC."""
-    return datetime.now(tz=timezone.utc)
+    return datetime.now(tz=UTC)
 
 
 def _str_or_none(value: str) -> str | None:

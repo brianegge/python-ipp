@@ -1,4 +1,5 @@
 """Response Parser for IPP."""
+
 from __future__ import annotations
 
 import logging
@@ -91,7 +92,9 @@ def parse_attribute(  # noqa: PLR0912, PLR0915
 
     if attribute["name"]:
         _LOGGER.debug(
-            "Attribute Name: %s (%s)", attribute["name"], hex(attribute["tag"]),
+            "Attribute Name: %s (%s)",
+            attribute["name"],
+            hex(attribute["tag"]),
         )
     else:
         _LOGGER.debug("Attribute Tag: %s", hex(attribute["tag"]))
@@ -121,7 +124,7 @@ def parse_attribute(  # noqa: PLR0912, PLR0915
     elif attribute["tag"] == IppTag.DATE.value:
         if attribute["value-length"] != 11:
             raise IPPParseError(
-                f'Invalid DATE size {attribute["value-length"]}',  # noqa: EM102
+                f"Invalid DATE size {attribute['value-length']}",  # noqa: EM102
             )
 
         raw_date = dict(
@@ -139,6 +142,7 @@ def parse_attribute(  # noqa: PLR0912, PLR0915
                     "tz_minute",
                 ),
                 struct.unpack_from(">hbbbbbbcbb", data, offset),
+                strict=True,
             ),
         )
         raw_date["microsecond"] = raw_date.pop("decisecond") * 100_000

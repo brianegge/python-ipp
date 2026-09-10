@@ -7,9 +7,7 @@ classifiers = [
   "Framework :: AsyncIO",
   "Intended Audience :: Developers",
   "Natural Language :: English",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -29,13 +27,11 @@ version = "0.0.0"
 aiohttp = ">=3.0.0"
 awesomeversion = ">=21.10.1"
 deepmerge = ">=1.1.0"
-python = "^3.11"
+python = "^3.14"
 yarl = ">=1.6.0"
 
 [tool.poetry.dev-dependencies]
 aresponses = "3.0.0"
-black = "25.1.0"
-blacken-docs = "1.19.1"
 codespell = "2.4.1"
 covdefaults = "2.3.0"
 coverage = {version = "7.9.1", extras = ["toml"]}
@@ -46,7 +42,7 @@ pylint = "3.3.7"
 pytest = "8.4.0"
 pytest-asyncio = "1.0.0"
 pytest-cov = "6.2.1"
-ruff = "0.6.9"
+ruff = "0.16.5"
 safety = "3.5.2"
 syrupy = "4.9.1"
 types-cachetools = "^5.3.0"
@@ -69,7 +65,7 @@ source = ["pyipp"]
 # free to run mypy on Windows, Linux, or macOS and get consistent
 # results.
 platform = "linux"
-python_version = 3.11
+python_version = 3.14
 
 # show error messages from unrelated files
 follow_imports = "normal"
@@ -148,11 +144,14 @@ include = ["src"]
 addopts = "--cov"
 asyncio_mode = "auto"
 
+[tool.ruff]
+target-version = "py314"
+
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-  "ANN101", # Self... explanatory
   "ANN401", # Opinionated warning on disallowing dynamically typed expressions
+  "CPY001", # No copyright notices in source files
   "D203", # Conflicts with other rules
   "D213", # Conflicts with other rules
   "D417", # False positives in some occasions

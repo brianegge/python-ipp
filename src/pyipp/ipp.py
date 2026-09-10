@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from asyncio import timeout
 from dataclasses import dataclass
 from importlib import metadata
@@ -125,7 +124,7 @@ class IPP:
                     headers=headers,
                     ssl=self.verify_ssl,
                 )
-        except asyncio.TimeoutError as exc:
+        except TimeoutError as exc:
             raise IPPConnectionError(
                 "Timeout occurred while connecting to IPP server.",
             ) from exc

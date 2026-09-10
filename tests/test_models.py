@@ -3,7 +3,7 @@
 # pylint: disable=R0912,R0915
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 import pytest
 
@@ -207,9 +207,9 @@ def test_printer_as_dict() -> None:
     assert isinstance(printer_dict, dict)
     assert isinstance(printer_dict["info"], dict)
     assert isinstance(printer_dict["state"], dict)
-    assert isinstance(printer_dict["markers"], List)
+    assert isinstance(printer_dict["markers"], list)
     assert len(printer_dict["markers"]) == 5
-    assert isinstance(printer_dict["uris"], List)
+    assert isinstance(printer_dict["uris"], list)
     assert len(printer_dict["uris"]) == 2
 
 

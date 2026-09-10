@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  DEFAULT_PYTHON: "3.13"
+  DEFAULT_PYTHON: "3.14"
 
 jobs:
   codespell:
@@ -59,8 +59,8 @@ jobs:
       - name: Run Ruff
         run: poetry run ruff check .
 
-  black:
-    name: black
+  ruff-format:
+    name: Ruff format
     runs-on: ubuntu-latest
     steps:
       - name: Check out code from GitHub
@@ -79,8 +79,8 @@ jobs:
           poetry config virtualenvs.in-project true
       - name: Install Python dependencies
         run: poetry install --no-interaction
-      - name: Run black on docs
-        run: poetry run blacken-docs
+      - name: Run Ruff format
+        run: poetry run ruff format --check .
 
   pre-commit-hooks:
     name: pre-commit-hooks

@@ -1,5 +1,6 @@
 # pylint: disable=W0621
 """Asynchronous Python client for IPP."""
+
 import asyncio
 
 from pyipp import IPP
