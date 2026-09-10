@@ -1,4 +1,5 @@
 """Asynchronous Python client for IPP."""
+
 from __future__ import annotations
 
 import asyncio
@@ -40,7 +41,9 @@ if sys.version_info >= (3, 11):
 else:
     from async_timeout import timeout
 
-VERSION = metadata.version(__package__)
+# The distribution is published as aioipp; the import name stays pyipp
+VERSION = metadata.version("aioipp")
+
 
 @dataclass
 class IPP:
@@ -242,7 +245,7 @@ class IPP:
 
         return self._printer
 
-    async def __aenter__(self) -> IPP:   # noqa: PYI034
+    async def __aenter__(self) -> IPP:  # noqa: PYI034
         """Async enter."""
         return self
 

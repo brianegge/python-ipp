@@ -2,6 +2,10 @@
 
 Asynchronous Python client for Internet Printing Protocol (IPP).
 
+> **Note:** `aioipp` is a maintained fork of [pyipp](https://github.com/ctalkington/python-ipp)
+> by Chris Talkington. It keeps the `pyipp` import name and adds page counter support.
+> It is published on PyPI as `aioipp`; do not install it alongside `pyipp`.
+
 ## About
 
 This package allows you to monitor printers that support the Internet Printing Protocol (IPP) programmatically.
@@ -9,7 +13,7 @@ This package allows you to monitor printers that support the Internet Printing P
 ## Installation
 
 ```bash
-pip install pyipp
+pip install aioipp
 ```
 
 ## Usage
