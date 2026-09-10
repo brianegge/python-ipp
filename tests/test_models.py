@@ -1,4 +1,5 @@
 """Tests for IPP Models."""
+
 # pylint: disable=R0912,R0915
 from __future__ import annotations
 
@@ -193,6 +194,7 @@ async def test_printer() -> None:  # noqa: PLR0915
     assert printer.uris[1].authentication is None
     assert printer.uris[1].security is None
 
+
 def test_printer_as_dict() -> None:
     """Test the dictionary version of Printer."""
     parsed = parser.parse(load_fixture_binary("get-printer-attributes-epsonxp6000.bin"))
@@ -210,6 +212,7 @@ def test_printer_as_dict() -> None:
     assert isinstance(printer_dict["uris"], List)
     assert len(printer_dict["uris"]) == 2
 
+
 def test_printer_update_from_dict() -> None:
     """Test updating data of Printer."""
     parsed = parser.parse(load_fixture_binary("get-printer-attributes-epsonxp6000.bin"))
@@ -225,6 +228,7 @@ def test_printer_update_from_dict() -> None:
     assert printer
     assert printer.info
     assert printer.info.uptime == 2
+
 
 @pytest.mark.asyncio
 async def test_printer_with_single_marker() -> None:
@@ -367,10 +371,45 @@ async def test_counters_defaults() -> None:
     counters = models.Counters.from_dict({})
 
     assert counters
-    assert counters.impressions_completed == -1
+    assert counters.impressions_completed is None
     assert counters.impressions_completed_col == {}
-    assert counters.pages_completed == -1
-    assert counters.media_sheets_completed == -1
+    assert counters.pages_completed is None
+    assert counters.media_sheets_completed is None
+
+
+@pytest.mark.asyncio
+async def test_counters_out_of_band() -> None:
+    """Test Counters model ignores out-of-band values.
+
+    The parser decodes out-of-band values (unknown, no-value) as strings.
+    """
+    data: dict[str, Any] = {
+        "printer-impressions-completed": "",
+        "printer-pages-completed": "",
+        "printer-media-sheets-completed": 42,
+        "printer-impressions-completed-col": {
+            "monochrome": 7,
+            "full-color": "",
+        },
+    }
+
+    counters = models.Counters.from_dict(data)
+
+    assert counters.impressions_completed == 7
+    assert counters.impressions_completed_col == {"monochrome": 7}
+    assert counters.pages_completed is None
+    assert counters.media_sheets_completed == 42
+
+
+@pytest.mark.asyncio
+async def test_counters_col_out_of_band() -> None:
+    """Test Counters model with an out-of-band collection."""
+    counters = models.Counters.from_dict(
+        {"printer-impressions-completed-col": ""},
+    )
+
+    assert counters.impressions_completed is None
+    assert counters.impressions_completed_col == {}
 
 
 @pytest.mark.asyncio

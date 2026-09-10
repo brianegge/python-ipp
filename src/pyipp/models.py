@@ -1,4 +1,5 @@
 """Models for IPP."""
+
 # pylint: disable=R0912,R0915
 from __future__ import annotations
 
@@ -115,31 +116,51 @@ class Uri:
     security: str | None
 
 
+def _int_or_none(value: Any) -> int | None:
+    """Return value if it is an integer counter, otherwise None.
+
+    The IPP parser decodes out-of-band values such as unknown or no-value
+    as strings, which must not be treated as counter values.
+    """
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
 @dataclass
 class Counters:
-    """Object holding page counter information from IPP."""
+    """Object holding page counter information from IPP.
 
-    impressions_completed: int
+    Counters the printer does not report, or reports as an out-of-band
+    value, are None.
+    """
+
+    impressions_completed: int | None
     impressions_completed_col: dict[str, int]
-    pages_completed: int
-    media_sheets_completed: int
+    pages_completed: int | None
+    media_sheets_completed: int | None
 
     @staticmethod
     def from_dict(data: dict[str, Any]) -> Counters:
         """Return Counters object from IPP response."""
-        col = data.get("printer-impressions-completed-col", {})
-        if not isinstance(col, dict):
-            col = {}
+        raw_col = data.get("printer-impressions-completed-col")
+        col: dict[str, int] = {}
+        if isinstance(raw_col, dict):
+            col = {
+                name: value
+                for name, value in raw_col.items()
+                if _int_or_none(value) is not None
+            }
 
-        impressions = data.get("printer-impressions-completed", -1)
-        if impressions == -1 and col:
+        impressions = _int_or_none(data.get("printer-impressions-completed"))
+        if impressions is None and col:
             impressions = sum(col.values())
 
         return Counters(
             impressions_completed=impressions,
             impressions_completed_col=col,
-            pages_completed=data.get("printer-pages-completed", -1),
-            media_sheets_completed=data.get("printer-media-sheets-completed", -1),
+            pages_completed=_int_or_none(data.get("printer-pages-completed")),
+            media_sheets_completed=_int_or_none(
+                data.get("printer-media-sheets-completed"),
+            ),
         )
 
 
@@ -202,7 +223,6 @@ class Printer:
             self.booted_at = _utcnow() - timedelta(seconds=self.info.uptime)
 
         return self
-
 
     @staticmethod
     def from_dict(data: dict[str, Any]) -> Printer:
@@ -348,6 +368,7 @@ class Printer:
 def _utcnow() -> datetime:
     """Return the current date and time in UTC."""
     return datetime.now(tz=timezone.utc)
+
 
 def _str_or_none(value: str) -> str | None:
     """Return string while handling string representations of None."""
