@@ -39,13 +39,14 @@ def load_rules() -> dict[str, Any]:
         source = response.read().decode()
     rules: dict[str, Any] = {}
     for node in ast.parse(source).body:
-        target = None
+        target: ast.expr | None = None
+        value: ast.expr | None = None
         if isinstance(node, ast.Assign) and len(node.targets) == 1:
-            target = node.targets[0]
+            target, value = node.targets[0], node.value
         elif isinstance(node, ast.AnnAssign):
-            target = node.target
-        if isinstance(target, ast.Name) and target.id in RULE_NAMES and node.value:
-            rules[target.id] = ast.literal_eval(node.value)
+            target, value = node.target, node.value
+        if isinstance(target, ast.Name) and target.id in RULE_NAMES and value:
+            rules[target.id] = ast.literal_eval(value)
     missing = set(RULE_NAMES) - rules.keys()
     if missing:
         msg = f"Could not find {sorted(missing)} in hassfest requirements.py"
@@ -56,7 +57,7 @@ def load_rules() -> dict[str, Any]:
 def dependency_tree(root: str) -> dict[str, dict[str, str]]:
     """Return {package: {dependency: version_spec}} for root and its dependencies."""
     tree: dict[str, dict[str, str]] = {}
-    to_check = [canonicalize_name(root)]
+    to_check: list[str] = [canonicalize_name(root)]
     while to_check:
         package = to_check.pop()
         if package in tree:
@@ -66,7 +67,7 @@ def dependency_tree(root: str) -> dict[str, dict[str, str]]:
             requirement = Requirement(line)
             if requirement.marker and not requirement.marker.evaluate({"extra": ""}):
                 continue
-            dependencies[canonicalize_name(requirement.name)] = str(
+            dependencies[str(canonicalize_name(requirement.name))] = str(
                 requirement.specifier,
             )
         tree[package] = dependencies
@@ -74,7 +75,7 @@ def dependency_tree(root: str) -> dict[str, dict[str, str]]:
     return tree
 
 
-def version_part_valid(  # noqa: PLR0911 - mirrors hassfest branch for branch
+def version_part_valid(  # noqa: PLR0911  # pylint: disable=too-many-return-statements
     version_part: str,
     convention: str,
     prepare_update: int | None,
