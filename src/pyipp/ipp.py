@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-import sys
+from asyncio import timeout
 from dataclasses import dataclass
 from importlib import metadata
 from socket import gaierror
@@ -35,11 +35,6 @@ from .serializer import encode_dict
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-
-if sys.version_info >= (3, 11):
-    from asyncio import timeout
-else:
-    from async_timeout import timeout
 
 # The distribution is published as aioipp; the import name stays pyipp
 VERSION = metadata.version("aioipp")
